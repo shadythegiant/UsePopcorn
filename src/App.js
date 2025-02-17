@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import Nav from "./Nav";
+import Box1 from "./Box1";
+import Box2 from "./Box2";
+import { tempMovieData, tempWatchedData } from "./TempData";
 
-function App() {
+const average = (arr) =>
+  arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
+
+//
+
+export default function App() {
+  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState(tempMovieData);
+  const [query, setQuery] = useState("");
+  const [isOpen1, setIsOpen1] = useState(true);
+  const [isOpen2, setIsOpen2] = useState(true);
+
+  const avgImdbRating = average(watched.map((movie) => movie.imdbRating));
+  const avgUserRating = average(watched.map((movie) => movie.userRating));
+  const avgRuntime = average(watched.map((movie) => movie.runtime));
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Nav movies={movies} query={query} setQuery={setQuery} />
+      <main className="main">
+        <Box1 movies={movies} isOpen1={isOpen1} setIsOpen1={setIsOpen1} />
+        <Box2
+          watched={watched}
+          isOpen2={isOpen2}
+          setIsOpen2={setIsOpen2}
+          avgImdbRating={avgImdbRating}
+          avgUserRating={avgUserRating}
+          avgRuntime={avgRuntime}
+        />
+      </main>
+    </>
   );
 }
-
-export default App;
