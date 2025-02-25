@@ -2,15 +2,47 @@ import { useEffect, useState } from "react";
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
+
 //
-const KEY = "f84fc31d";
-// App component
+//  const KEYS = [ '4b447405',
+//   'eb0c0475',
+//   '7776cbde',
+//   'ff28f90b',
+//   '6c3a2d45',
+//   'b07b58c8',
+//   'ad04b643',
+//   'a95b5205',
+//   '777d9323',
+//   '2c2c3314',
+//   'b5cff164',
+//   '89a9f57d',
+//   '73a9858a',
+//   'efbd8357']
+
+// const KEY = "f84fc31d";
+const KEY = "777d9323";
+
+//  ----------------------------------------- App component -------------------------------
 export default function App() {
+  // constants and state
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [selectedID, setSelectedId] = useState(null);
+
+  // handle functions
+
+  function handleSetSelectedId(id) {
+    setSelectedId((selectedId) => (id === selectedId ? null : id));
+  }
+
+  function handleCloseMovie() {
+    setSelectedId(null);
+  }
+
+  // effect
 
   useEffect(() => {
     async function fetchMovies() {
@@ -48,6 +80,8 @@ export default function App() {
     }
   }, [query]);
 
+  //  ------------------------------  JSX -------------------------------------------------
+
   return (
     <>
       <NavBar>
@@ -59,17 +93,33 @@ export default function App() {
         <Box>
           {isLoading && <Loader />}
           {error && <Error message={error} />}
-          {!isLoading && !error && <MovieList movies={movies} />}
+          {!isLoading && !error && (
+            <MovieList
+              movies={movies}
+              handleSetSelectedId={handleSetSelectedId}
+            />
+          )}
         </Box>
 
         <Box>
-          <WatchedSummary watched={watched} />
-          <WatchedMoviesList watched={watched} />
+          {selectedID ? (
+            <MovieDetails
+              selectedID={selectedID}
+              handleCloseMovie={handleCloseMovie}
+            />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMoviesList watched={watched} />
+            </>
+          )}
         </Box>
       </Main>
     </>
   );
 }
+
+// NavBar Component
 
 function NavBar({ children }) {
   return (
@@ -80,6 +130,8 @@ function NavBar({ children }) {
   );
 }
 
+// LOGO
+
 function Logo() {
   return (
     <div className="logo">
@@ -88,6 +140,8 @@ function Logo() {
     </div>
   );
 }
+
+//  SEARCH COMP
 
 function Search({ query, setQuery }) {
   return (
@@ -109,9 +163,12 @@ function NumResults({ movies }) {
   );
 }
 
+// MAIN
 function Main({ children }) {
   return <main className="main">{children}</main>;
 }
+
+// BOX
 
 function Box({ children }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -127,19 +184,23 @@ function Box({ children }) {
   );
 }
 
-function MovieList({ movies }) {
+function MovieList({ movies, handleSetSelectedId }) {
   return (
-    <ul className="list">
+    <ul className="list list-movies">
       {movies?.map((movie) => (
-        <Movie movie={movie} key={movie.imdbID} />
+        <Movie
+          movie={movie}
+          key={movie.imdbID}
+          handleSetSelectedId={handleSetSelectedId}
+        />
       ))}
     </ul>
   );
 }
 
-function Movie({ movie }) {
+function Movie({ movie, handleSetSelectedId }) {
   return (
-    <li>
+    <li onClick={() => handleSetSelectedId(movie.imdbID)}>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
       <div>
@@ -221,4 +282,16 @@ function Loader() {
 
 function Error({ message }) {
   return <p className="error"> {message}</p>;
+}
+
+// selected Movie component
+function MovieDetails({ selectedID, handleCloseMovie }) {
+  return (
+    <div className="details">
+      <button className="btn-back" onClick={handleCloseMovie}>
+        &larr;
+      </button>
+      {selectedID}
+    </div>
+  );
 }
