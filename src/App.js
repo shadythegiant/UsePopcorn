@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import StarRating from "./StarRating";
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -42,6 +43,11 @@ export default function App() {
     setSelectedId(null);
   }
 
+  function handleAddWatched(movie) {
+    // we create an arrray destruct already existig movie object and add the new one
+    setWatched((watched) => [...watched, movie]);
+  }
+
   // effect
 
   useEffect(() => {
@@ -67,7 +73,6 @@ export default function App() {
         setError(err.message);
       } finally {
         setIsLoading(false);
-        setWatched([]);
       }
     }
 
@@ -106,6 +111,7 @@ export default function App() {
             <MovieDetails
               selectedID={selectedID}
               handleCloseMovie={handleCloseMovie}
+              onAddWatched={handleAddWatched}
             />
           ) : (
             <>
@@ -256,7 +262,7 @@ function WatchedMoviesList({ watched }) {
 function WatchedMovie({ movie }) {
   return (
     <li>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
+      <img src={movie.poster} alt={`${movie.title} poster`} />
       <h3>{movie.Title}</h3>
       <div>
         <p>
@@ -285,13 +291,86 @@ function Error({ message }) {
 }
 
 // selected Movie component
-function MovieDetails({ selectedID, handleCloseMovie }) {
+function MovieDetails({ selectedID, handleCloseMovie, onAddWatched }) {
+  // state to track movie selected
+
+  const [movie, setMovie] = useState({});
+  const {
+    Title: title,
+    Year: year,
+    Poster: poster,
+    Runtime: runtime,
+    imdbRating,
+    Plot: plot,
+    Released: released,
+    Actors: actors,
+    Director: directors,
+    Genre: genre,
+  } = movie;
+
+  // to fetch indvidual movies we need an effect everytime the comp renders
+
+  useEffect(() => {
+    async function fetchMovieDetail() {
+      const res = await fetch(
+        `https://www.omdbapi.com/?apikey=${KEY}&i=${selectedID}`
+      );
+      const data = await res.json();
+      console.log(data);
+      setMovie(data);
+    }
+
+    fetchMovieDetail();
+  }, [selectedID]);
+
+  // functions
+  function handleAdd() {
+    const newWatchedMovie = {
+      imdbID: selectedID,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: parseFloat(runtime),
+    };
+    onAddWatched(newWatchedMovie);
+    handleCloseMovie();
+  }
+
+  // --------------------------------- JSX ----------------------------------
+
   return (
     <div className="details">
-      <button className="btn-back" onClick={handleCloseMovie}>
-        &larr;
-      </button>
-      {selectedID}
+      <header>
+        <button className="btn-back" onClick={handleCloseMovie}>
+          &larr;
+        </button>
+        <img src={poster} alt={`poster of ${movie}`} />
+        <div className="details-overview">
+          <h2>{title}</h2>
+          <p>
+            {released} &bull; {runtime}
+          </p>
+          <p>{genre}</p>
+          <p>
+            <span>⭐</span> {imdbRating} Imdb Rating
+          </p>
+        </div>
+      </header>
+      <section>
+        <div className="rating">
+          <StarRating maxRating={10} size={24} />
+          <button className="btn-add" onClick={handleAdd}>
+            {" "}
+            + Add to list
+          </button>
+        </div>
+        <p>
+          <em>{plot}</em>
+        </p>
+        <p>Starring {actors}</p>
+        <p>Directed by {directors}</p>
+      </section>
     </div>
   );
 }
