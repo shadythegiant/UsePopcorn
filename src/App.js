@@ -310,6 +310,9 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) 
     Genre: genre,
   } = movie;
 
+  // 
+  const isWatched = watched.map(movie => movie.imdbID).includes(selectedID)
+
   // to fetch indvidual movies we need an effect everytime the comp renders
 
   useEffect(() => {
@@ -337,7 +340,7 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) 
       userRating
     };
 
-    if (watched.includes(newWatchedMovie , 0)) return; 
+   
     onAddWatched(newWatchedMovie);
     handleCloseMovie();
   }
@@ -363,7 +366,7 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) 
         </div>
       </header>
       <section>
-        <div className="rating">
+       {!isWatched ? <> <div className="rating">
           <StarRating maxRating={10} size={24} onSetRating={setUserRating} />
        {userRating > 0 &&    <button className="btn-add" onClick={handleAdd}>
             {" "}
@@ -374,7 +377,7 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) 
           <em>{plot}</em>
         </p>
         <p>Starring {actors}</p>
-        <p>Directed by {directors}</p>
+        <p>Directed by {directors}</p></> : <p>you rated this movie </p>}
       </section>
     </div>
   );
