@@ -1,70 +1,108 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# Movie Tracker Web App ( usePopcorn ) part of the Jonas Shmedttman React course 
 
-In the project directory, you can run:
+Welcome to the **Movie Tracker Web App**, a React-based project built as part of a React course to explore the power of state management with hooks and data fetching with the `useEffect` hook. This web app allows users to search for movies using the [OMDB API](http://www.omdbapi.com/), track movies they’ve watched, rate them, and view insightful metrics like the average runtime of watched movies and the average rating.
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Search Movies**: Use the OMDB API to search for movies by title.
+- **Track Watched Movies**: Add movies to your "Watched" list.
+- **Rate Movies**: Assign ratings to movies you’ve watched.
+- **View Metrics**: See stats like:
+  - Average runtime of watched movies (in minutes).
+  - Average rating of watched movies.
+  - Total number of movies watched.
+- **Responsive Design**: A clean and user-friendly interface that works on all devices. ( not implemented yet the app doesn't suppor mobile ) 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Tech Stack
 
-### `npm test`
+- **React**: Frontend library for building the user interface.
+- **React Hooks**:
+  - `useState`: Manages local state for movie data, ratings, and search input.
+  - `useEffect`: Handles side effects like fetching data from the OMDB API.
+- **OMDB API**: External API for fetching movie details.
+- **CSS**: Styling for a sleek and intuitive UI.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Learning Objectives
 
-### `npm run build`
+This project is designed to help you master:
+- Managing component state with the `useState` hook.
+- Fetching and handling asynchronous data with the `useEffect` hook.
+- Working with external APIs in a React application.
+- Building a dynamic and interactive user interface.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Prerequisites
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Before running the project, ensure you have the following:
+- [Node.js](https://nodejs.org/) (v14 or higher) installed.
+- An API key from [OMDB API](http://www.omdbapi.com/apikey.aspx) (free tier available).
+- Basic knowledge of React and JavaScript.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Installation
 
-### `npm run eject`
+1. **Clone the Repository**  
+   ```bash
+   git clone https://github.com/shadythegiant/UsePopcorn.git
+   cd movie-tracker
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. **Install Dependencies**  
+   ```bash
+   npm install
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. **Set Up Environment Variables**  
+   Create a `.env` file in the root directory and add your OMDB API key:
+   ```plaintext
+   REACT_APP_OMDB_API_KEY=your_api_key_here
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+4. **Run the App**  
+   ```bash
+   npm start
+   ```
+   The app will launch at `http://localhost:3000` in your browser.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Usage
 
-## Learn More
+1. **Search for a Movie**: Enter a movie title in the search bar and hit "Search".
+2. **Add to Watched List**: Click "Add to Watched" on a movie result to track it.
+3. **Rate the Movie**: Assign a rating (e.g., 1–10) to the movie.
+4. **View Stats**: Check the dashboard for averages and totals based on your watched movies.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+## How It Works
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **State Management**: The `useState` hook tracks the search query, movie results, watched movies, and ratings in the app’s state.
+- **Data Fetching**: The `useEffect` hook triggers an API call to OMDB whenever the search query changes, fetching movie data dynamically.
+- **Metrics Calculation**: The app computes averages and totals based on the watched movie list, updating in real-time as you add or rate movies.
 
-### Analyzing the Bundle Size
+## Example
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Search for "Inception":
+- Add it to your watched list with a rating of 8.
+- Search for "The Matrix" and add it with a rating of 9.
+- Stats might show:
+  - Average Rating: 8.5
+  - Average Runtime: 145 minutes
+  - Total Movies Watched: 2
 
-### Making a Progressive Web App
+## Future Improvements
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Add local storage to persist the watched list across sessions.
+- Implement sorting and filtering for the watched list.
+- Enhance the UI with animations or a dark mode toggle.
 
-### Advanced Configuration
+## Contributing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+This is a learning project, but feel free to fork it and experiment! Submit a pull request if you’d like to share your enhancements.
 
-### Deployment
+## Acknowledgments
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- Thanks to the [OMDB API](http://www.omdbapi.com/) for providing free movie data.
+- Built as part of a React course to deepen understanding of hooks and API integration.
 
-### `npm run build` fails to minify
+Happy coding, and enjoy tracking your movies!
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
