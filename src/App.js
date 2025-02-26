@@ -112,6 +112,7 @@ export default function App() {
               selectedID={selectedID}
               handleCloseMovie={handleCloseMovie}
               onAddWatched={handleAddWatched}
+              watched = {watched}
             />
           ) : (
             <>
@@ -291,7 +292,7 @@ function Error({ message }) {
 }
 
 // selected Movie component
-function MovieDetails({ selectedID, handleCloseMovie, onAddWatched }) {
+function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) {
   // state to track movie selected
 
   const [movie, setMovie] = useState({});
@@ -335,6 +336,8 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched }) {
       runtime: parseFloat(runtime),
       userRating
     };
+
+    if (watched.includes(newWatchedMovie)) return; git 
     onAddWatched(newWatchedMovie);
     handleCloseMovie();
   }
@@ -365,7 +368,7 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched }) {
        {userRating > 0 &&    <button className="btn-add" onClick={handleAdd}>
             {" "}
             + Add to list
-          </button>}
+          </button> }
         </div>
         <p>
           <em>{plot}</em>
