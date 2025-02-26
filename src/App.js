@@ -311,7 +311,8 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) 
   } = movie;
 
   // 
-  const isWatched = watched.map(movie => movie.imdbID).includes(selectedID)
+  const isWatched = watched.map(movie => movie.imdbID).includes(selectedID); 
+  const watchedUserRating = watched.find(movie => movie.imdbID === selectedID)?.userRating; 
 
   // to fetch indvidual movies we need an effect everytime the comp renders
 
@@ -366,18 +367,18 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) 
         </div>
       </header>
       <section>
-       {!isWatched ? <> <div className="rating">
-          <StarRating maxRating={10} size={24} onSetRating={setUserRating} />
+        <div className="rating">
+         {!isWatched ? <> <StarRating maxRating={10} size={24} onSetRating={setUserRating} />
        {userRating > 0 &&    <button className="btn-add" onClick={handleAdd}>
             {" "}
             + Add to list
-          </button> }
+          </button> }</> : <p>you already rated this movie {watchedUserRating}</p>}
         </div>
         <p>
           <em>{plot}</em>
         </p>
         <p>Starring {actors}</p>
-        <p>Directed by {directors}</p></> : <p>you rated this movie </p>}
+        <p>Directed by {directors}</p>
       </section>
     </div>
   );
