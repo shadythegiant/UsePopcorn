@@ -337,7 +337,7 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) 
       userRating
     };
 
-    if (watched.includes(newWatchedMovie)) return; 
+    if (watched.includes(newWatchedMovie , 0)) return; 
     onAddWatched(newWatchedMovie);
     handleCloseMovie();
   }
