@@ -21,7 +21,7 @@ const average = (arr) =>
 //   'efbd8357']
 
 // const KEY = "f84fc31d";
-const KEY = "777d9323";
+const KEY = "ff28f90b";
 
 //  ----------------------------------------- App component -------------------------------
 export default function App() {
@@ -295,6 +295,7 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched }) {
   // state to track movie selected
 
   const [movie, setMovie] = useState({});
+  const [userRating ,setUserRating] = useState(''); 
   const {
     Title: title,
     Year: year,
@@ -332,6 +333,7 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched }) {
       poster,
       imdbRating: Number(imdbRating),
       runtime: parseFloat(runtime),
+      userRating
     };
     onAddWatched(newWatchedMovie);
     handleCloseMovie();
@@ -359,8 +361,8 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched }) {
       </header>
       <section>
         <div className="rating">
-          <StarRating maxRating={10} size={24} />
-          <button className="btn-add" onClick={handleAdd}>
+          <StarRating maxRating={10} size={24} onSetRating={setUserRating} />
+         {userRating > 0 &&  <button className="btn-add" onClick={handleAdd}>}
             {" "}
             + Add to list
           </button>
