@@ -21,7 +21,7 @@ const average = (arr) =>
 //   'efbd8357']
 
 // const KEY = "f84fc31d";
-const KEY = "ff28f90b";
+const KEY = "7776cbde";
 
 //  ----------------------------------------- App component -------------------------------
 export default function App() {
@@ -48,20 +48,24 @@ export default function App() {
     setWatched((watched) => [...watched, movie]);
   }
 
-
   function handleDeleteWatched(id) {
-    setWatched(watched => watched.filter(movie => movie.imdbID !== id))
+    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
 
   // effect
 
   useEffect(() => {
+    // creating an instance of the abortCOntroller to fix the race condition problem
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     async function fetchMovies() {
       try {
         setIsLoading(true);
         setError("");
         const res = await fetch(
-          `https://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          `https://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+          { signal }
         );
         // throwing erro if !res.ok
 
@@ -74,8 +78,10 @@ export default function App() {
 
         setMovies(data.Search);
       } catch (err) {
-        console.error(err.message);
-        setError(err.message);
+        if (err.name !== "AbortError") {
+          console.error(err.message);
+          setError(err.message);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -88,6 +94,11 @@ export default function App() {
     } else {
       fetchMovies();
     }
+    // clean up function
+
+    return function () {
+      controller.abort();
+    };
   }, [query]);
 
   //  ------------------------------  JSX -------------------------------------------------
@@ -117,12 +128,15 @@ export default function App() {
               selectedID={selectedID}
               handleCloseMovie={handleCloseMovie}
               onAddWatched={handleAddWatched}
-              watched = {watched}
+              watched={watched}
             />
           ) : (
             <>
               <WatchedSummary watched={watched} />
-              <WatchedMoviesList watched={watched} onDelete={handleDeleteWatched} />
+              <WatchedMoviesList
+                watched={watched}
+                onDelete={handleDeleteWatched}
+              />
             </>
           )}
         </Box>
@@ -255,7 +269,7 @@ function WatchedSummary({ watched }) {
   );
 }
 
-function WatchedMoviesList({ watched, onDelete}) {
+function WatchedMoviesList({ watched, onDelete }) {
   return (
     <ul className="list">
       {watched.map((movie) => (
@@ -283,7 +297,9 @@ function WatchedMovie({ movie, onDelete }) {
           <span>⏳</span>
           <span>{movie.runtime} min</span>
         </p>
-        <button className="btn-delete" onClick={() => onDelete(movie.imdbID)}>X</button>
+        <button className="btn-delete" onClick={() => onDelete(movie.imdbID)}>
+          X
+        </button>
       </div>
     </li>
   );
@@ -298,11 +314,11 @@ function Error({ message }) {
 }
 
 // selected Movie component
-function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) {
+function MovieDetails({ selectedID, handleCloseMovie, onAddWatched, watched }) {
   // state to track movie selected
 
   const [movie, setMovie] = useState({});
-  const [userRating ,setUserRating] = useState(''); 
+  const [userRating, setUserRating] = useState("");
   const {
     Title: title,
     Year: year,
@@ -316,9 +332,20 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) 
     Genre: genre,
   } = movie;
 
-  // 
-  const isWatched = watched.map(movie => movie.imdbID).includes(selectedID); 
-  const watchedUserRating = watched.find(movie => movie.imdbID === selectedID)?.userRating; 
+  useEffect(() => {
+    if (!title) return;
+    document.title = `Movie | ${title}`;
+
+    return function () {
+      document.title = "UsePopcorn";
+    };
+  }, [title]);
+
+  //
+  const isWatched = watched.map((movie) => movie.imdbID).includes(selectedID);
+  const watchedUserRating = watched.find(
+    (movie) => movie.imdbID === selectedID
+  )?.userRating;
 
   // to fetch indvidual movies we need an effect everytime the comp renders
 
@@ -328,7 +355,7 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) 
         `https://www.omdbapi.com/?apikey=${KEY}&i=${selectedID}`
       );
       const data = await res.json();
-      console.log(data);
+
       setMovie(data);
     }
 
@@ -344,13 +371,14 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) 
       poster,
       imdbRating: Number(imdbRating),
       runtime: parseFloat(runtime),
-      userRating
+      userRating,
     };
 
-   
     onAddWatched(newWatchedMovie);
     handleCloseMovie();
   }
+
+  //
 
   // --------------------------------- JSX ----------------------------------
 
@@ -374,11 +402,24 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched , watched }) 
       </header>
       <section>
         <div className="rating">
-         {!isWatched ? <> <StarRating maxRating={10} size={24} onSetRating={setUserRating} />
-       {userRating > 0 &&    <button className="btn-add" onClick={handleAdd}>
-            {" "}
-            + Add to list
-          </button> }</> : <p>You already rated this movie {watchedUserRating} ⭐</p>}
+          {!isWatched ? (
+            <>
+              {" "}
+              <StarRating
+                maxRating={10}
+                size={24}
+                onSetRating={setUserRating}
+              />
+              {userRating > 0 && (
+                <button className="btn-add" onClick={handleAdd}>
+                  {" "}
+                  + Add to list
+                </button>
+              )}
+            </>
+          ) : (
+            <p>You already rated this movie {watchedUserRating} ⭐</p>
+          )}
         </div>
         <p>
           <em>{plot}</em>
