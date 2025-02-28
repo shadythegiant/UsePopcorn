@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
+import { useLocalStorage } from "./useLocalStorage";
 
 const average = (arr) =>
   arr?.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -27,32 +28,7 @@ const KEY = "7776cbde";
 export default function App() {
   // constants and state
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState(function () {
-    // const sotredValue = localStorage.getItem("watched");
-    // return sotredValue ? JSON.parse(sotredValue) : [];
-    //
-    if (typeof window !== "undefined" && window.localStorage) {
-      const storedValue = localStorage.getItem("watched");
-      console.log("Stored Value from localStorage:", storedValue); // Debugging
-
-      if (storedValue) {
-        try {
-          const parsedValue = JSON.parse(storedValue);
-          console.log("Parsed Value:", parsedValue); // Debugging
-          return parsedValue;
-        } catch (error) {
-          console.error("Error parsing stored value:", error); // Debugging
-          return [];
-        }
-      } else {
-        console.log("No stored value, defaulting to empty array."); // Debugging
-        return [];
-      }
-    } else {
-      console.log("localStorage not available, defaulting to empty array."); // Debugging
-      return [];
-    }
-  });
+  const [watched, setWatched] = useLocalStorage([], "watched");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
@@ -130,12 +106,6 @@ export default function App() {
     };
   }, [query]);
 
-  // local Storage effect
-
-  useEffect(() => {
-    localStorage.setItem("watched", JSON.stringify(watched));
-  }, [watched]);
-
   //  ------------------------------  JSX -------------------------------------------------
 
   return (
@@ -205,6 +175,11 @@ function Logo() {
 //  SEARCH COMP
 
 function Search({ query, setQuery }) {
+  const inputEL = useRef(null);
+
+  useEffect(() => {
+    inputEL.current.focus();
+  }, []);
   return (
     <input
       className="search"
@@ -212,6 +187,7 @@ function Search({ query, setQuery }) {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setQuery(e.target.value)}
+      ref={inputEL}
     />
   );
 }
