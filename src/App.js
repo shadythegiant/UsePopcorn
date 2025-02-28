@@ -36,6 +36,8 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [selectedID, setSelectedId] = useState(null);
 
+  console.log(watched);
+
   // handle functions
 
   function handleSetSelectedId(id) {
