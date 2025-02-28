@@ -27,7 +27,10 @@ const KEY = "7776cbde";
 export default function App() {
   // constants and state
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+  const [watched, setWatched] = useState(function () {
+    const sotredValue = localStorage.getItem("watched");
+    return JSON.parse(sotredValue);
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
@@ -46,6 +49,8 @@ export default function App() {
   function handleAddWatched(movie) {
     // we create an arrray destruct already existig movie object and add the new one
     setWatched((watched) => [...watched, movie]);
+    //
+    // localStorage.setItem("watched", JSON.stringify([...watched, movie]));
   }
 
   function handleDeleteWatched(id) {
@@ -72,7 +77,7 @@ export default function App() {
         if (!res.ok)
           throw new Error("Something went wrong with fetching movies");
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
         // throw error if Respose false
         if (data.Response === "False") throw new Error("Movie was not found");
 
@@ -100,6 +105,12 @@ export default function App() {
       controller.abort();
     };
   }, [query]);
+
+  // local Storage effect
+
+  useEffect(() => {
+    localStorage.setItem("watched", JSON.stringify(watched));
+  }, [watched]);
 
   //  ------------------------------  JSX -------------------------------------------------
 
