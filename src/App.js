@@ -28,8 +28,29 @@ export default function App() {
   // constants and state
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState(function () {
-    const sotredValue = localStorage.getItem("watched");
-    return sotredValue ? JSON.parse(sotredValue) : [];
+    // const sotredValue = localStorage.getItem("watched");
+    // return sotredValue ? JSON.parse(sotredValue) : [];
+    if (typeof window !== "undefined" && window.localStorage) {
+      const storedValue = localStorage.getItem("watched");
+      console.log("Stored Value from localStorage:", storedValue); // Debugging
+
+      if (storedValue) {
+        try {
+          const parsedValue = JSON.parse(storedValue);
+          console.log("Parsed Value:", parsedValue); // Debugging
+          return parsedValue;
+        } catch (error) {
+          console.error("Error parsing stored value:", error); // Debugging
+          return [];
+        }
+      } else {
+        console.log("No stored value, defaulting to empty array."); // Debugging
+        return [];
+      }
+    } else {
+      console.log("localStorage not available, defaulting to empty array."); // Debugging
+      return [];
+    }
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
