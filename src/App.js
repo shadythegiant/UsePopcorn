@@ -28,10 +28,8 @@ export default function App() {
   // constants and state
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState(function () {
-    const sotredValue = localStorage.getItem("watched")
-      ? localStorage.getItem("watched")
-      : [];
-    return JSON.parse(sotredValue);
+    const sotredValue = localStorage.getItem("watched");
+    return sotredValue ? JSON.parse(sotredValue) : [];
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
