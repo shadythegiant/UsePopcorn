@@ -261,7 +261,7 @@ function WatchedSummary({ watched }) {
       <div>
         <p>
           <span>#️⃣</span>
-          <span>{watched.length} movies</span>
+          <span>{watched?.length} movies</span>
         </p>
         <p>
           <span>⭐️</span>
@@ -283,7 +283,7 @@ function WatchedSummary({ watched }) {
 function WatchedMoviesList({ watched, onDelete }) {
   return (
     <ul className="list">
-      {watched.map((movie) => (
+      {watched?.map((movie) => (
         <WatchedMovie movie={movie} key={movie.imdbID} onDelete={onDelete} />
       ))}
     </ul>
@@ -353,8 +353,8 @@ function MovieDetails({ selectedID, handleCloseMovie, onAddWatched, watched }) {
   }, [title]);
 
   //
-  const isWatched = watched.map((movie) => movie.imdbID).includes(selectedID);
-  const watchedUserRating = watched.find(
+  const isWatched = watched?.map((movie) => movie.imdbID).includes(selectedID);
+  const watchedUserRating = watched?.find(
     (movie) => movie.imdbID === selectedID
   )?.userRating;
 
