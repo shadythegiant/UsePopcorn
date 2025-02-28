@@ -30,6 +30,7 @@ export default function App() {
   const [watched, setWatched] = useState(function () {
     // const sotredValue = localStorage.getItem("watched");
     // return sotredValue ? JSON.parse(sotredValue) : [];
+    //
     if (typeof window !== "undefined" && window.localStorage) {
       const storedValue = localStorage.getItem("watched");
       console.log("Stored Value from localStorage:", storedValue); // Debugging
